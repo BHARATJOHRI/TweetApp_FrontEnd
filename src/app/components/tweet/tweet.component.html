@@ -1,0 +1,194 @@
+
+  <nav class="navbar navbar-light bg-primary">
+    <div class="container-fluid">
+        <h1 style="color: aliceblue;">TweetApp</h1>
+        <div class="d-flex">
+            <button (click)="toggle1()" class="btn btn-success">Tweet</button>
+        </div>
+        <div class="d-flex">
+            <button (click)="toggle()" class="btn btn-success">My Tweet</button>
+        </div>
+        <div class="d-flex" style="float: right;">
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="toggle2()">Add Tweet</button>
+        </div>
+        <div class="d-flex" style="float: right;">
+            <button class="btn btn-success" (click)="logout()" >Log Out</button>
+        </div>
+    </div>
+</nav>
+<br><br>
+<!-- tweet -->
+<div class="container" *ngIf="showMe">
+<div class="card text-white bg-primary mt-3" *ngFor="let tweet of tweetdata">
+    <div *ngFor="let user of userdata" >
+        <h5 class="card-header" style="color: aliceblue;" *ngIf="tweet.userId == user.userId">
+            <i class="fas fa-user-circle"></i>{{user.name}}
+            <button style="margin-left: 10px;float: right;" (click)="commenttweet(tweet)"  type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"><i class="fas fa-comment"></i></button>
+            <!-- <div *ngFor="let c of countcheck"><p>{{c.tweet}}</p></div> -->
+            <button style="margin-left: 100px;float: right;" (click)="like(tweet)" ><i class="fas fa-thumbs-up"></i> <span  *ngFor="let like of countcheck"><span *ngIf="tweet.tweetId == like.tweet;">{{like.like}}</span></span></button>
+
+        </h5>
+    </div>
+    <div class="card-body">
+      <!-- <h5 class="card-title">Special title treatment</h5> -->
+      <p class="card-text">{{tweet.post}}</p>
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+      
+      <div class="card text-white bg-danger" *ngFor="let comment of commentdata">
+        <!-- <div class="card-header">
+          Quote
+        </div> -->
+        <div class="card-body" *ngIf="comment.tweetId == tweet.tweetId">
+          <blockquote class="blockquote mb-0">
+            <div *ngFor="let user of userdata" >
+            <p *ngIf="comment.userId == user.userId">{{user.name}}</p>
+            </div>
+            <footer class="blockquote-footer text-white">{{comment.reply}}</footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+  
+
+<!-- my tweet -->
+<div class="container" *ngIf="show">
+    <div *ngFor="let tweet of tweetdata">
+        <div *ngIf="tweet.userId == mytweet" class="card text-white bg-primary mt-3" >
+            <div *ngFor="let user of userdata" >
+                <h5 class="card-header" style="color: aliceblue;" *ngIf="tweet.userId == user.userId">
+                    <i class="fas fa-user-circle"></i>{{user.name}}
+                    <button style="margin-left: 10px;float: right;" (click)="deletetweet(tweet)"><i class="fas fa-trash-alt"></i></button>
+                    <button style="margin-left: 100px;float: right;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"  (click)="edittweet(tweet)"><i class="fas fa-pen"></i></button>
+        
+                </h5>
+            </div>
+            <div class="card-body">
+              <!-- <h5 class="card-title">Special title treatment</h5> -->
+              <p class="card-text">{{tweet.post}}</p>
+              <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+              
+              <div class="card text-white bg-danger" *ngFor="let comment of commentdata">
+                <!-- <div class="card-header">
+                  Quote
+                </div> -->
+                <div class="card-body" *ngIf="comment.tweetId == tweet.tweetId">
+                  <blockquote class="blockquote mb-0">
+                    <div *ngFor="let user of userdata" >
+                    <p *ngIf="comment.userId == user.userId">{{user.name}}</p>
+                    </div>
+                    <footer class="blockquote-footer text-white">{{comment.reply}}</footer>
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" *ngIf="!editshow">Add Post</h5>
+          <h5 class="modal-title" id="exampleModalLabel"  *ngIf="editshow">Edit Post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="tweetForm" (ngSubmit)="saveTweet()">
+                <div class="form-group">
+                    <!-- <label for="post">Post</label> -->
+                    <input type="text" class="form-control" id="post" name="post" formControlName="post">
+                </div>
+                <div class="form-group" *ngIf="!editshow">
+                    <input type="submit" value="Save" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer" *ngIf="editshow">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="saveedittweet()" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <!-- Modal comment -->
+  <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Add Comment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="commentForm" (ngSubmit)="saveComment()">
+                <div class="form-group">
+                    <label for="reply">Comment</label>
+                    <input type="text" class="form-control" id="reply" name="reply" formControlName="reply">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <!-- <div class="modal-footer" *ngIf="editshow">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="saveedittweet()" class="btn btn-primary">Save</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

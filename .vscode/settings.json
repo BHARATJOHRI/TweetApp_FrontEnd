@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/919ce1b5-ac37-4e35-9729-36c6382d3c53/microsoft.web/sites/subscriptions/919ce1b5-ac37-4e35-9729-36c6382d3c53/resourceGroups/rg1/providers/Microsoft.Web/sites/TweetAzureApp",
+    "appService.deploySubpath": "dist\\tweet-app-front"
+}
